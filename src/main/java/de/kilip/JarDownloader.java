@@ -8,12 +8,11 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.jar.JarFile;
 
-public class HttpDownloader {
-    public static boolean downloadJar(String url, String file_name)
-    {
-        try(HttpClient client = HttpClient.newHttpClient())
-        {
+public class JarDownloader {
+    public static boolean downloadJar(String url, String file_name) {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             var request = HttpRequest.newBuilder().uri(URI.create(url)).build();
             HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
@@ -23,8 +22,16 @@ public class HttpDownloader {
                 return true;
             }
 
-        } catch (IOException | InterruptedException _) {
+        } catch (Exception _) {
         }
         return false;
     }
+
+    public static JarFile downloadIfAbsent(String url, String file_name) throws IOException {
+        if (!Files.exists(Path.of(file_name))){
+            JarDownloader.downloadJar(url, file_name);
+        }
+        return new JarFile(file_name);
+    }
+
 }
