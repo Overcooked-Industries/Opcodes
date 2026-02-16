@@ -25,7 +25,6 @@ public class OpCodePrinterClassVisitor extends ClassVisitor {
 
             public void visitVarInsn(final int opcode, final int varIndex) {
                 System.out.println("0x" + Integer.toHexString(opcode) + " 0x" + Integer.toHexString(varIndex));
-
             }
         };
     }
