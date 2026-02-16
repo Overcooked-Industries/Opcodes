@@ -33,6 +33,6 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
 
     @Override
     public void visitFieldInsn(final int opcode, final String owner, final String name, final String descriptor) {
-        IO.println(opcode + owner + name + descriptor);
+        IO.println(StringUtils.toHexString(opcode) + " " + owner + " " +  name + " " + descriptor);
     }
 }
