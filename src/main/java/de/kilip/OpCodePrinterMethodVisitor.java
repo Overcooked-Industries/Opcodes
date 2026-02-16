@@ -17,11 +17,11 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
 
     @Override
     public void visitIntInsn(final int opcode, final int operand) {
-        System.out.println("0x" + Integer.toHexString(opcode));
+        IO.println("0x" + Integer.toHexString(opcode));
     }
 
     @Override
     public void visitVarInsn(final int opcode, final int varIndex) {
-        System.out.println("0x" + Integer.toHexString(opcode) + " 0x" + Integer.toHexString(varIndex));
+        IO.println("0x" + Integer.toHexString(opcode) + " 0x" + Integer.toHexString(varIndex));
     }
 }
