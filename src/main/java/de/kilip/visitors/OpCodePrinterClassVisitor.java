@@ -1,4 +1,4 @@
-package de.kilip;
+package de.kilip.visitors;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -19,5 +19,4 @@ public class OpCodePrinterClassVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(final int access, final String name, final String descriptor, final String signature, final String[] exceptions) {
         return new OpCodePrinterMethodVisitor(api);
     }
-
 }

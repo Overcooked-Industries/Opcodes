@@ -1,5 +1,6 @@
-package de.kilip;
+package de.kilip.visitors;
 
+import de.kilip.util.StringUtils;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -17,11 +18,21 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
 
     @Override
     public void visitIntInsn(final int opcode, final int operand) {
-        IO.println("0x" + Integer.toHexString(opcode));
+        IO.println(StringUtils.toHexString(opcode));
     }
 
     @Override
     public void visitVarInsn(final int opcode, final int varIndex) {
-        IO.println("0x" + Integer.toHexString(opcode) + " 0x" + Integer.toHexString(varIndex));
+        IO.println(StringUtils.toHexString(opcode) + " " + StringUtils.toHexString(varIndex));
+    }
+
+    @Override
+    public void visitParameter(final String name, final int access) {
+        IO.println(name);
+    }
+
+    @Override
+    public void visitFieldInsn(final int opcode, final String owner, final String name, final String descriptor) {
+        IO.println(opcode + owner + name + descriptor);
     }
 }

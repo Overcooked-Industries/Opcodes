@@ -1,4 +1,4 @@
-package de.kilip;
+package de.kilip.jar;
 
 import java.io.IOException;
 import java.net.URI;
