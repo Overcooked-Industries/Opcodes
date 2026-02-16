@@ -15,8 +15,7 @@ void main() throws IOException {
             try (InputStream inputStream = clientJar.getInputStream(jarEntry)) {
                 var reader = new ClassReader(inputStream);
                 reader.accept(new OpCodePrinterClassVisitor(ASM9), 0);
-            } catch (Exception _) {
-            }
+            } catch (Exception _) {}
         });
     }
 }
