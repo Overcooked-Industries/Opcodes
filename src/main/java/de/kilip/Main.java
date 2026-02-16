@@ -5,7 +5,10 @@ void main() throws IOException {
     String filename = "client.jar";
     var clientJar = JarDownloader.downloadIfAbsent(url, filename);
     clientJar.entries().asIterator().forEachRemaining(jarEntry -> {
-        if(!jarEntry.isDirectory() && jarEntry.getName().endsWith(".class")) IO.println(Arrays.stream(jarEntry.getName().split("/")).toList().getLast());
+        if(!jarEntry.isDirectory() && jarEntry.getName().endsWith(".class")) {
+            String name = Arrays.stream(jarEntry.getName().split("/")).toList().getLast();
+            IO.println(name);
+        }
     });
 }
 
