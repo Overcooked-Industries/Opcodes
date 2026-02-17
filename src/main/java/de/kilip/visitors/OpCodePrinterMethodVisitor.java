@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes;
 public class OpCodePrinterMethodVisitor extends MethodVisitor {
 
     /**
-     * Constructs a new {@link MethodVisitor}.
+     * Constructs a new {@link OpCodePrinterMethodVisitor}.
      *
      * @param api the ASM API version implemented by this visitor. Must be one of the {@code
      *            ASM}<i>x</i> values in {@link Opcodes}.
@@ -34,5 +34,10 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
     @Override
     public void visitFieldInsn(final int opcode, final String owner, final String name, final String descriptor) {
         IO.println(StringUtils.toHexString(opcode) + " " + owner + " " +  name + " " + descriptor);
+    }
+
+    @Override
+    public void visitInsn(final int opcode) {
+        IO.println(StringUtils.toHexString(opcode));
     }
 }
