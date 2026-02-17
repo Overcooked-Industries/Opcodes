@@ -1,4 +1,4 @@
-package de.kilip.visitors;
+package de.overcooked_industries.visitors;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;

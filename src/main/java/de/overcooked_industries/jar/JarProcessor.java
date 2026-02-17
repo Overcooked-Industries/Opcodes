@@ -1,12 +1,11 @@
-package de.kilip.jar;
+package de.overcooked_industries.jar;
 
-import de.kilip.util.StringUtils;
-import de.kilip.visitors.OpCodePrinterClassVisitor;
+import de.overcooked_industries.util.StringUtils;
+import de.overcooked_industries.visitors.OpCodePrinterClassVisitor;
 import org.objectweb.asm.ClassReader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.function.Predicate;
 
 import static org.objectweb.asm.Opcodes.ASM9;

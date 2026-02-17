@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "de.kilip"
+group = "de.overcooked_industries"
 version = "1.0-SNAPSHOT"
 
 repositories {

@@ -1,4 +1,4 @@
-package de.kilip.jar;
+package de.overcooked_industries.jar;
 
 import java.io.IOException;
 import java.net.URI;

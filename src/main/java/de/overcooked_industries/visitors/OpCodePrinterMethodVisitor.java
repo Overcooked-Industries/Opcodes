@@ -1,6 +1,6 @@
-package de.kilip.visitors;
+package de.overcooked_industries.visitors;
 
-import de.kilip.util.StringUtils;
+import de.overcooked_industries.util.StringUtils;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
