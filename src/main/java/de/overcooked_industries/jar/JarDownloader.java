@@ -26,7 +26,7 @@ public class JarDownloader {
     }
 
     public static JarFile downloadIfAbsent(String url, String file_name) throws IOException {
-        if (!Files.exists(Path.of(file_name))){
+        if (!Files.exists(Path.of(file_name))) {
             JarDownloader.downloadJar(url, file_name);
         }
         return new JarFile(file_name);
