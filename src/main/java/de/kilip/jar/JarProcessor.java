@@ -17,7 +17,7 @@ public class JarProcessor {
         try (var clientJar = JarDownloader.downloadIfAbsent(url, StringUtils.findAfterLast(url,"/"))) {
             clientJar.entries().asIterator().forEachRemaining(jarEntry -> {
                 if (!processingCondition.test(jarEntry.getName())) return;
-                String pretty = StringUtils.findAfterLast(url,"/");
+                String pretty = StringUtils.findAfterLast(jarEntry.getName(),"/");
                 IO.println(pretty);
                 try (InputStream inputStream = clientJar.getInputStream(jarEntry)) {
                     var reader = new ClassReader(inputStream);
