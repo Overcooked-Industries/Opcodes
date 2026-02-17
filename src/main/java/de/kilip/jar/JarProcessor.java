@@ -18,7 +18,7 @@ public class JarProcessor {
             clientJar.entries().asIterator().forEachRemaining(jarEntry -> {
                 if (!processingCondition.test(jarEntry.getName())) return;
                 String pretty = StringUtils.findAfterLast(jarEntry.getName(),"/");
-                IO.println(pretty);
+                IO.println("\n"+pretty+"\n");
                 try (InputStream inputStream = clientJar.getInputStream(jarEntry)) {
                     var reader = new ClassReader(inputStream);
                     reader.accept(new OpCodePrinterClassVisitor(ASM9), 0);
