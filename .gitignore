@@ -43,3 +43,4 @@ bin/
 .DS_Store
 server.jar
 client.jar
+output.txt

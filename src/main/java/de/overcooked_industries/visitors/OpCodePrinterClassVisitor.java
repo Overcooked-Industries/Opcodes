@@ -5,6 +5,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class OpCodePrinterClassVisitor extends ClassVisitor {
+    public static final StringBuilder sb = new StringBuilder();
     /**
      * Constructs a new {@link OpCodePrinterClassVisitor}.
      *
@@ -17,6 +18,7 @@ public class OpCodePrinterClassVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String descriptor, final String signature, final String[] exceptions) {
-        return new OpCodePrinterMethodVisitor(api);
+        return new OpCodePrinterMethodVisitor(api, sb);
     }
+
 }

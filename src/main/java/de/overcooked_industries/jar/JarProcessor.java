@@ -4,6 +4,7 @@ import de.overcooked_industries.util.StringUtils;
 import de.overcooked_industries.visitors.OpCodePrinterClassVisitor;
 import org.objectweb.asm.ClassReader;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Predicate;
@@ -24,6 +25,13 @@ public class JarProcessor {
                 }
             });
         } catch (IOException _) {
+        }
+
+        try(FileWriter fw = new FileWriter("output.txt"))
+        {
+            fw.write(OpCodePrinterClassVisitor.sb.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
