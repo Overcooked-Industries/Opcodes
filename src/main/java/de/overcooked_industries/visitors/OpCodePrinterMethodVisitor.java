@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 public class OpCodePrinterMethodVisitor extends MethodVisitor {
-    private StringBuilder outputBuilder;
+    private final StringBuilder outputBuilder;
     public String output;
 
     /**
@@ -37,7 +37,7 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
      */
     @Override
     public void visitIntInsn(final int opcode, final int operand) {
-        outputBuilder.append(StringUtils.toHexString(opcode));
+        outputBuilder.append(StringUtils.toHexString(opcode)).append("\n");
     }
 
     /**
@@ -51,7 +51,7 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
      */
     @Override
     public void visitVarInsn(final int opcode, final int varIndex) {
-        outputBuilder.append(StringUtils.toHexString(opcode)).append(" ").append(StringUtils.toHexString(varIndex));
+        outputBuilder.append(StringUtils.toHexString(opcode)).append(" ").append(StringUtils.toHexString(varIndex)).append("\n");
     }
 
     /**
@@ -63,7 +63,7 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
      */
     @Override
     public void visitParameter(final String name, final int access) {
-        outputBuilder.append(name);
+        outputBuilder.append(name).append("\n");
     }
 
     /**
@@ -78,7 +78,7 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
      */
     @Override
     public void visitFieldInsn(final int opcode, final String owner, final String name, final String descriptor) {
-        outputBuilder.append(StringUtils.toHexString(opcode)).append(" ").append(owner).append(" ").append(name).append(" ").append(descriptor);
+        outputBuilder.append(StringUtils.toHexString(opcode)).append(" ").append(owner).append(" ").append(name).append(" ").append(descriptor).append("\n");
     }
 
     /**
@@ -97,7 +97,7 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
      */
     @Override
     public void visitInsn(final int opcode) {
-        outputBuilder.append(StringUtils.toHexString(opcode));
+        outputBuilder.append(StringUtils.toHexString(opcode)).append("\n");
     }
 
     /**
@@ -111,6 +111,6 @@ public class OpCodePrinterMethodVisitor extends MethodVisitor {
      *               designates the instruction to which the jump instruction may jump.
      */
     public void visitJumpInsn(final int opcode, final Label label) {
-        outputBuilder.append(opcode).append(" to ").append(StringUtils.toHexString(label.getOffset()));
+        outputBuilder.append(opcode).append(" to ").append(StringUtils.toHexString(label.getOffset())).append("\n");
     }
 }
