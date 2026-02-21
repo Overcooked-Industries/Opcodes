@@ -12,12 +12,15 @@ import java.util.function.Predicate;
 import static org.objectweb.asm.Opcodes.ASM9;
 
 public class JarProcessor {
+    public static final StringBuilder outputText = new StringBuilder();
+
+
     public static void process(String url, Predicate<String> processingCondition) {
         try (var clientJar = JarDownloader.downloadIfAbsent(url, StringUtils.findAfterLast(url, "/"))) {
             clientJar.entries().asIterator().forEachRemaining(jarEntry -> {
                 if (!processingCondition.test(jarEntry.getName())) return;
                 String pretty = StringUtils.findAfterLast(jarEntry.getName(), "/");
-                IO.println("\n" + pretty + "\n");
+                outputText.append("\n").append(pretty).append("\n");
                 try (InputStream inputStream = clientJar.getInputStream(jarEntry)) {
                     var reader = new ClassReader(inputStream);
                     reader.accept(new OpCodePrinterClassVisitor(ASM9), 0);
@@ -29,7 +32,7 @@ public class JarProcessor {
 
         try(FileWriter fw = new FileWriter("output.txt"))
         {
-            fw.write(OpCodePrinterClassVisitor.sb.toString());
+            fw.write(outputText.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
