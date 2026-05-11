@@ -1,10 +1,10 @@
 package de.overcooked_industries.visitors;
 
-import static de.overcooked_industries.jar.JarProcessor.outputText;
-
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+
+import static de.overcooked_industries.jar.JarProcessor.outputText;
 
 public class OpCodePrinterClassVisitor extends ClassVisitor {
 

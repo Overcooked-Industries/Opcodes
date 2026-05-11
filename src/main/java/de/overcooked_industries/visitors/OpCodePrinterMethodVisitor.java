@@ -7,7 +7,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 public class OpCodePrinterMethodVisitor extends MethodVisitor {
-
 	private final StringBuilder outputBuilder;
 
 	/**
