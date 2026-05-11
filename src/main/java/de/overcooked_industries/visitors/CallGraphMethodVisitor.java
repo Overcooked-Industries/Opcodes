@@ -3,11 +3,15 @@ package de.overcooked_industries.visitors;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import java.util.function.Predicate;
+
 import static de.overcooked_industries.jar.JarProcessor.outputText;
 
 public class CallGraphMethodVisitor extends MethodVisitor {
     private final StringBuilder outputBuilder;
     private final String name;
+    //private static final Predicate<String> inStdLib = (name) -> name.startsWith("java/");
+    private static final Predicate<String> isMinecraftClass = (name) -> name.startsWith("com/mojang") || name.startsWith("net/minecraft");
 
     /**
      * Constructs a new {@link OpCodePrinterMethodVisitor}.
@@ -23,7 +27,7 @@ public class CallGraphMethodVisitor extends MethodVisitor {
 
     @Override
     public void visitMethodInsn(final int opcode, final String owner, final String name, final String descriptor, final boolean isInterface) {
-        outputBuilder.append(this.name).append(" calls: ").append(owner).append("#").append(name).append("\n");
+        if(isMinecraftClass.test(owner)) outputBuilder.append(this.name).append(" calls: ").append(owner).append("#").append(name).append("\n");
     }
 
 }
