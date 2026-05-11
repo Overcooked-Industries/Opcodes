@@ -13,7 +13,7 @@ public class OpCodePrinterClassVisitor extends ClassVisitor {
      * @param api the ASM API version implemented by this visitor. Must be one of the {@code
      *            ASM}<i>x</i> values in {@link Opcodes}.
      */
-    public OpCodePrinterClassVisitor(int api) {
+    public OpCodePrinterClassVisitor(int api, String name) {
         super(api);
     }
 
