@@ -5,13 +5,11 @@ import org.objectweb.asm.Opcodes;
 
 import java.util.function.Predicate;
 
-import static de.overcooked_industries.jar.JarProcessor.outputText;
-
 public class CallGraphMethodVisitor extends MethodVisitor {
-    private final StringBuilder outputBuilder;
-    private final String name;
     //private static final Predicate<String> inStdLib = (name) -> name.startsWith("java/");
     private static final Predicate<String> isMinecraftClass = (name) -> name.startsWith("com/mojang") || name.startsWith("net/minecraft");
+    private final StringBuilder outputBuilder;
+    private final String name;
 
     /**
      * Constructs a new {@link OpCodePrinterMethodVisitor}.

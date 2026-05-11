@@ -1,7 +1,6 @@
 package de.overcooked_industries.jar;
 
 import de.overcooked_industries.util.StringUtils;
-import de.overcooked_industries.visitors.OpCodePrinterClassVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 
@@ -9,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static org.objectweb.asm.Opcodes.ASM9;
