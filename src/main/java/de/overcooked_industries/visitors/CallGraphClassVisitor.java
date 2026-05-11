@@ -6,7 +6,6 @@ import org.objectweb.asm.MethodVisitor;
 import static de.overcooked_industries.jar.JarProcessor.outputText;
 
 public class CallGraphClassVisitor extends ClassVisitor {
-
 	private final String name;
 
 	public CallGraphClassVisitor(int api, String name) {

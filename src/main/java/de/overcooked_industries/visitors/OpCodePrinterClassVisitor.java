@@ -7,7 +7,6 @@ import org.objectweb.asm.Opcodes;
 import static de.overcooked_industries.jar.JarProcessor.outputText;
 
 public class OpCodePrinterClassVisitor extends ClassVisitor {
-
 	/**
 	 * Constructs a new {@link OpCodePrinterClassVisitor}.
 	 *
