@@ -2,14 +2,13 @@ package de.overcooked_industries.visitors;
 
 import de.overcooked_industries.util.UnpickUtil;
 import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 import static de.overcooked_industries.jar.JarProcessor.outputText;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    float lookOutFor = Float.floatToRawIntBits(1.5707964F);
+    float lookOutFor = Float.floatToRawIntBits(1.0E-5F);
     String className;
 
     /**
@@ -36,6 +35,9 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitLdcInsn(Object value) {
                 if(value instanceof Float f && Float.floatToRawIntBits(f) == lookOutFor) {
+                    outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
+                }
+                if(value instanceof Double d && Float.floatToRawIntBits((float) d.doubleValue()) == lookOutFor) {
                     outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
                 }
             }
