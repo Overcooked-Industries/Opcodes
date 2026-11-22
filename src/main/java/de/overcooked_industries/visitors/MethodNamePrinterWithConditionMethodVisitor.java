@@ -2,10 +2,7 @@ package de.overcooked_industries.visitors;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
-
-import java.util.function.Predicate;
 
 //Specially made to contribute to FabricMC/annotater
 //Specificity should be taken for granted
