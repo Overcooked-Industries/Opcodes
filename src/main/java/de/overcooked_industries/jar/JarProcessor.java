@@ -18,7 +18,7 @@ public class JarProcessor {
     public static final StringBuilder outputText = new StringBuilder();
 
 
-    public static <T extends ClassVisitor> void process(String url, Predicate<String> processingCondition, BiFunction<Integer, String, T> cv) throws IOException {
+    public static <T extends ClassVisitor> String process(String url, Predicate<String> processingCondition, BiFunction<Integer, String, T> cv, boolean writeToFile) throws IOException {
         var jar = JarDownloader.downloadIfAbsent(url, StringUtils.findAfterLast(url, "/"));
         jar.entries().asIterator().forEachRemaining(jarEntry -> {
             if (!processingCondition.test(jarEntry.getName())) return;
@@ -26,7 +26,9 @@ public class JarProcessor {
         });
 
         jar.close();
-        FileWriterUtils.writeToFile("output.txt", outputText.toString());
+
+        if(writeToFile) FileWriterUtils.writeToFile("output.txt", outputText.toString());
+        return outputText.toString();
     }
 
     private static <T extends ClassVisitor> void processEntry(JarFile jar, JarEntry jarEntry, BiFunction<Integer, String, T> cv) {
