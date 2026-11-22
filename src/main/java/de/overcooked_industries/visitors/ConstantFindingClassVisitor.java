@@ -34,10 +34,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
         return new MethodVisitor(api) {
             @Override
             public void visitLdcInsn(Object value) {
-                if(value instanceof Float f && Float.floatToRawIntBits(f) == lookOutFor) {
-                    outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
-                }
-                if(value instanceof Double d && Float.floatToRawIntBits((float) d.doubleValue()) == lookOutFor) {
+                if (value instanceof Float f && Float.floatToRawIntBits(f) == lookOutFor || value instanceof Double d && Float.floatToRawIntBits((float) d.doubleValue()) == lookOutFor) {
                     outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
                 }
             }
