@@ -6,5 +6,5 @@ import de.overcooked_industries.visitors.MethodNamePrinterWithConditionClassVisi
 private static final String url = "https://piston-data.mojang.com/v1/objects/e877b6a07acd633fb3bb475002175cec036e7b87/client.jar";
 
 void main()  {
-    JarProcessor.process(url, (name) -> name.endsWith(".class"), ConstantFindingClassVisitor::new, false);
+    JarProcessor.process(url, (name) -> name.endsWith(".class"), ConstantFindingClassVisitor::new);
 }
