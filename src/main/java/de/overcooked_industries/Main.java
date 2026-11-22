@@ -7,5 +7,4 @@ private static final String url = "https://piston-data.mojang.com/v1/objects/e87
 
 void main()  {
     JarProcessor.process(url, (name) -> name.endsWith(".class"), ConstantFindingClassVisitor::new, false);
-    JarProcessor.process(url, (name) -> name.endsWith("EntityEvent.class"), FieldNamePrinterClassVisitor::new, false);
 }

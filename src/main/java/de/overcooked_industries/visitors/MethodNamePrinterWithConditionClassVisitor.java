@@ -23,6 +23,6 @@ public class MethodNamePrinterWithConditionClassVisitor extends ClassVisitor {
             final String signature,
             final String[] exceptions
     ) {
-        return new MethodNamePrinterWithConditionMethodVisitor(api, outputText, this.name + "." + name, descriptor);
+        return new MethodNamePrinterWithConditionMethodVisitor(api, outputText, this.name, name, descriptor);
     }
 }

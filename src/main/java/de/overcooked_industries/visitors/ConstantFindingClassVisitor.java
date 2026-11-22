@@ -1,5 +1,6 @@
 package de.overcooked_industries.visitors;
 
+import de.overcooked_industries.util.UnpickUtil;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -35,7 +36,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitLdcInsn(Object value) {
                 if(value instanceof Float f && Float.floatToRawIntBits(f) == lookOutFor) {
-                    System.out.println(className+"."+methodName);
+                    outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
                 }
             }
         };
