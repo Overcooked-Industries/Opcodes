@@ -7,6 +7,8 @@ import org.objectweb.asm.ClassVisitor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
@@ -16,6 +18,7 @@ import static org.objectweb.asm.Opcodes.ASM9;
 
 public class JarProcessor {
     public static final StringBuilder outputText = new StringBuilder();
+    public static final Set<String> seen = new HashSet<>();
 
 
     public static <T extends ClassVisitor> String process(String url, Predicate<String> processingCondition, BiFunction<Integer, String, T> cv, boolean writeToFile) throws IOException {

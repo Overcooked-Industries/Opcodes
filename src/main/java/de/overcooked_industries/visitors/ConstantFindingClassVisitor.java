@@ -6,9 +6,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 import static de.overcooked_industries.jar.JarProcessor.outputText;
+import static de.overcooked_industries.jar.JarProcessor.seen;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    float lookOutFor = Float.floatToRawIntBits(1.0E-5F);
+    float lookOutFor = Float.floatToRawIntBits(180.0F / (float)Math.PI);
     String className;
 
     /**
@@ -20,6 +21,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
     public ConstantFindingClassVisitor(int api, String name) {
         super(api);
         this.className = name;
+        seen.clear();
     }
 
 
@@ -35,7 +37,10 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitLdcInsn(Object value) {
                 if (value instanceof Float f && Float.floatToRawIntBits(f) == lookOutFor || value instanceof Double d && Float.floatToRawIntBits((float) d.doubleValue()) == lookOutFor) {
-                    outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
+                    if(!seen.contains(className+methodName)) {
+                        outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
+                        seen.add(className+methodName);
+                    }
                 }
             }
         };
