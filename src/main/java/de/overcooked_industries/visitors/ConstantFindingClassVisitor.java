@@ -9,7 +9,7 @@ import static de.overcooked_industries.jar.JarProcessor.outputText;
 import static de.overcooked_industries.jar.JarProcessor.seen;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    String lookOutFor = "minecraft";
+    int lookOutFor = 58;
     String className;
 
     /**
@@ -37,6 +37,18 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitLdcInsn(Object value) {
                 if (UnpickUtil.unpickableLDCsEqual(lookOutFor, value) && !seen.contains(className + methodName)) {
+                    outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
+                    seen.add(className + methodName);
+                }
+            }
+
+            //Useful for chars - BIPUSH
+            @Override
+            public void visitIntInsn(final int opcode, final int operand) {
+                if(operand != lookOutFor) return;
+
+                System.out.println((char) operand);
+                if (UnpickUtil.unpickableLDCsEqual(lookOutFor, operand) && !seen.contains(className + methodName)) {
                     outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
                     seen.add(className + methodName);
                 }
