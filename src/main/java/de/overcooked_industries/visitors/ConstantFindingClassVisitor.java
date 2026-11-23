@@ -9,7 +9,7 @@ import static de.overcooked_industries.jar.JarProcessor.outputText;
 import static de.overcooked_industries.jar.JarProcessor.seen;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    float lookOutFor = Float.floatToRawIntBits(180.0F / (float) Math.PI);
+    String lookOutFor = "minecraft";
     String className;
 
     /**
@@ -36,11 +36,9 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
         return new MethodVisitor(api) {
             @Override
             public void visitLdcInsn(Object value) {
-                if (value instanceof Float f && Float.floatToRawIntBits(f) == lookOutFor || value instanceof Double d && Float.floatToRawIntBits((float) d.doubleValue()) == lookOutFor) {
-                    if(!seen.contains(className + methodName)) {
-                        outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
-                        seen.add(className + methodName);
-                    }
+                if (UnpickUtil.unpickableLDCsEqual(lookOutFor, value) && !seen.contains(className + methodName)) {
+                    outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
+                    seen.add(className + methodName);
                 }
             }
         };
