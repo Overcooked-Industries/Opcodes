@@ -11,6 +11,7 @@ public class UnpickUtil {
     //TODO: Potentially switch-case
     public static boolean unpickableLDCsEqual(Object lookOutFor, Object cst) {
         if(!(lookOutFor instanceof String || lookOutFor instanceof Number)) return false;
+        if(cst == null) return false;
 
         if (cst instanceof Integer i && lookOutFor instanceof Integer i2) {
             return (int) i == i2;
