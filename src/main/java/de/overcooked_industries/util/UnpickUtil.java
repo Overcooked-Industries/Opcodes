@@ -1,5 +1,7 @@
 package de.overcooked_industries.util;
 
+import org.objectweb.asm.Opcodes;
+
 public class UnpickUtil {
     private UnpickUtil(){}
 
@@ -9,7 +11,7 @@ public class UnpickUtil {
     }
 
     //TODO: Potentially switch-case
-    public static boolean unpickableLDCsEqual(Object lookOutFor, Object cst) {
+    public static boolean unpickableObjectsEqual(Object lookOutFor, Object cst) {
         if(!(lookOutFor instanceof String || lookOutFor instanceof Number)) return false;
         if(cst == null) return false;
 
@@ -36,4 +38,30 @@ public class UnpickUtil {
         return false;
     }
 
+    //double, float, int, long
+    public static Number toNumber(int opcode) {
+        return switch(opcode) {
+            case Opcodes.ICONST_M1 -> -1;
+            case Opcodes.ICONST_0 -> 0;
+
+
+            case Opcodes.ICONST_1 -> 1;
+            case Opcodes.ICONST_2 -> 2;
+            case Opcodes.ICONST_3 -> 3;
+            case Opcodes.ICONST_4 -> 4;
+            case Opcodes.ICONST_5 -> 5;
+
+            case Opcodes.LCONST_0 -> 0L;
+            case Opcodes.LCONST_1 -> 1L;
+
+            case Opcodes.FCONST_0 -> 0f;
+            case Opcodes.FCONST_1 -> 1f;
+            case Opcodes.FCONST_2 -> 2f;
+
+            case Opcodes.DCONST_0 -> 0.0;
+            case Opcodes.DCONST_1 -> 1.0;
+
+            default -> null;
+        };
+    }
 }
