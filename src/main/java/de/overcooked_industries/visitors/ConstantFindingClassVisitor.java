@@ -5,11 +5,15 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import java.util.function.BiFunction;
+
 import static de.overcooked_industries.jar.JarProcessor.outputText;
 import static de.overcooked_industries.jar.JarProcessor.seen;
+import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyEqual;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    int lookOutFor = 1;
+    Object lookOutFor = "1";
+    boolean exactMatch = true;
     String className;
 
     /**
@@ -37,16 +41,21 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
         return new MethodVisitor(api) {
             @Override
             public void visitLdcInsn(Object value) {
-                addToOutputIfValid(lookOutFor, value);
+                addToOutputIfValid(lookOutFor, value, (lookOutFor, constant) -> unpickableObjectsRoughlyEqual(lookOutFor, constant, exactMatch));
             }
 
             //Useful for chars/ints/bytes/shorts, as SIPUSH or BIPUSH may be used instead of LDC for these types
             @Override
             public void visitIntInsn(final int opcode, final int operand) {
-                if(!(opcode == Opcodes.SIPUSH || opcode == Opcodes.BIPUSH)) return;
-                if(operand != lookOutFor) return;
+                //We need to do checks for every single one of these because reasons
+                if(lookOutFor instanceof Integer || lookOutFor instanceof Character || lookOutFor instanceof Byte || lookOutFor instanceof Short) return;
 
-                addToOutputIfValid(lookOutFor, operand);
+                if(!(opcode == Opcodes.SIPUSH || opcode == Opcodes.BIPUSH)) return;
+
+                //This is always widening or identity, so it's fine
+                if(operand != (int) lookOutFor) return;
+
+                addToOutputIfValid(lookOutFor, operand, UnpickUtil::unpickableObjectsEqual);
             }
 
 
@@ -60,15 +69,15 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitInsn(final int opcode) {
                 Number constant = UnpickUtil.toNumber(opcode);
-                if (UnpickUtil.toNumber(opcode) != null) addToOutputIfValid(lookOutFor, constant);
+                if (UnpickUtil.toNumber(opcode) != null) addToOutputIfValid(lookOutFor, constant, UnpickUtil::unpickableObjectsEqual);
             }
 
             
             //Helper methods
 
 
-            void addToOutputIfValid(Object lookOutFor, Object constant) {
-                if (!seen.contains(className + methodName) && UnpickUtil.unpickableObjectsEqual(lookOutFor, constant)) {
+            void addToOutputIfValid(Object lookOutFor, Object constant, BiFunction<Object, Object, Boolean> doEqual) {
+                if (!seen.contains(className + methodName) && doEqual.apply(lookOutFor, constant)) {
                     outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
                     seen.add(className + methodName);
                 }

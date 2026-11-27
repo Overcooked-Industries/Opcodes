@@ -10,8 +10,14 @@ public class UnpickUtil {
         return "@scope method " + className.replace("/",".") + " " + methodName + " " + methodDescriptor + "\n";
     }
 
-    //TODO: Potentially switch-case
     public static boolean unpickableObjectsEqual(Object lookOutFor, Object cst) {
+        return unpickableObjectsRoughlyEqual(lookOutFor, cst, true);
+    }
+
+    // byte, double, float, int, long, and short
+    //TODO: Potentially switch-case
+    //TODO: short, byte
+    public static boolean unpickableObjectsRoughlyEqual(Object lookOutFor, Object cst, boolean exact) {
         if(!(lookOutFor instanceof String || lookOutFor instanceof Number)) return false;
         if(cst == null) return false;
 
@@ -31,8 +37,8 @@ public class UnpickUtil {
             return l.equals(lookOutFor);
         }
 
-        if (cst instanceof String s) {
-            return s.equals(lookOutFor);
+        if (cst instanceof String s && lookOutFor instanceof String lOf) {
+            return exact ? s.equals(lookOutFor) : s.contains(lOf);
         }
 
         return false;
