@@ -9,7 +9,7 @@ import static de.overcooked_industries.jar.JarProcessor.outputText;
 import static de.overcooked_industries.jar.JarProcessor.seen;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    int lookOutFor = 2;
+    int lookOutFor = 1200;
     String className;
 
     /**
@@ -48,7 +48,6 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             public void visitIntInsn(final int opcode, final int operand) {
                 if(operand != lookOutFor) return;
 
-                System.out.println((char) operand);
                 if (UnpickUtil.unpickableLDCsEqual(lookOutFor, operand) && !seen.contains(className + methodName)) {
                     outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
                     seen.add(className + methodName);
