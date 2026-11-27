@@ -12,7 +12,7 @@ import static de.overcooked_industries.jar.JarProcessor.seen;
 import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyEqual;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    Object lookOutFor = "1";
+    Object lookOutFor = "mine";
     boolean exactMatch = true;
     String className;
 
@@ -48,7 +48,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitIntInsn(final int opcode, final int operand) {
                 //We need to do checks for every single one of these because reasons
-                if(lookOutFor instanceof Integer || lookOutFor instanceof Character || lookOutFor instanceof Byte || lookOutFor instanceof Short) return;
+                if(!(lookOutFor instanceof Integer || lookOutFor instanceof Character || lookOutFor instanceof Byte || lookOutFor instanceof Short)) return;
 
                 if(!(opcode == Opcodes.SIPUSH || opcode == Opcodes.BIPUSH)) return;
 
