@@ -1,5 +1,7 @@
 plugins {
     id("java")
+    application
+    id("com.gradleup.shadow") version "9.5.+"
 }
 
 group = "de.overcooked_industries"
@@ -11,6 +13,10 @@ repositories {
 
 dependencies {
     implementation("org.ow2.asm:asm:9.11.1")
+}
+
+application {
+    mainClass = "Main"
 }
 
 tasks.test {
