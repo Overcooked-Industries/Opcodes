@@ -9,7 +9,7 @@ import static de.overcooked_industries.jar.JarProcessor.outputText;
 import static de.overcooked_industries.jar.JarProcessor.seen;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    int lookOutFor = 1200;
+    int lookOutFor = 20;
     String className;
 
     /**
@@ -43,9 +43,10 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
                 }
             }
 
-            //Useful for chars - BIPUSH
+            //Useful for chars/ints/bytes/shorts, as SIPUSH or BIPUSH may be used instead of LDC for these types
             @Override
             public void visitIntInsn(final int opcode, final int operand) {
+                if(!(opcode == Opcodes.SIPUSH || opcode == Opcodes.BIPUSH)) return;
                 if(operand != lookOutFor) return;
 
                 if (UnpickUtil.unpickableLDCsEqual(lookOutFor, operand) && !seen.contains(className + methodName)) {
