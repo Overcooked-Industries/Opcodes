@@ -1,9 +1,7 @@
 package de.overcooked_industries.visitors;
 
 import de.overcooked_industries.util.UnpickUtil;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.*;
 
 import java.util.function.BiFunction;
 
@@ -12,7 +10,7 @@ import static de.overcooked_industries.jar.JarProcessor.seen;
 import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyEqual;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    Object lookOutFor = "mine";
+    Object lookOutFor = "MC_DEBUG_";
     boolean exactMatch = true;
     String className;
 
@@ -72,15 +70,32 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
                 if (UnpickUtil.toNumber(opcode) != null) addToOutputIfValid(lookOutFor, constant, UnpickUtil::unpickableObjectsEqual);
             }
 
-            
+
+            //Useful for String concatenation
+            @Override
+            public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
+                if(!("makeConcatWithConstants".equals(name) && "(Ljava/lang/String;)Ljava/lang/String;".equals(descriptor))) return;
+                //TODO: Don't blindly trust we get given the right method handle (Should be right though, lol)
+
+                //TODO: make matching more strict, don't just do .contains()
+                for(Object object : bootstrapMethodArguments) {
+                    if (object instanceof String string && addToOutputIfValid(lookOutFor, string, (lookOutFor, constant) -> unpickableObjectsRoughlyEqual(lookOutFor, constant, false))) return;
+                }
+            }
+
+
+
             //Helper methods
 
 
-            void addToOutputIfValid(Object lookOutFor, Object constant, BiFunction<Object, Object, Boolean> doEqual) {
-                if (!seen.contains(className + methodName) && doEqual.apply(lookOutFor, constant)) {
+            boolean addToOutputIfValid(Object lookOutFor, Object constant, BiFunction<Object, Object, Boolean> equalityCheck) {
+                boolean equal = equalityCheck.apply(lookOutFor, constant);
+                if (!seen.contains(className + methodName) && equal) {
                     outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
                     seen.add(className + methodName);
                 }
+
+                return equal;
             }
 
         };
