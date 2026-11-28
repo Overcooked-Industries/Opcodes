@@ -10,7 +10,8 @@ import static de.overcooked_industries.jar.JarProcessor.seen;
 import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyEqual;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    Object lookOutFor = "MC_DEBUG_";
+    Object lookOutFor = ":";
+    //Field specifying whether to deny partial matches of Strings; true => Don't allow, false => allow
     boolean exactMatch = true;
     String className;
 
@@ -72,14 +73,19 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
 
 
             //Useful for String concatenation
+
             @Override
             public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
-                if(!("makeConcatWithConstants".equals(name) && "(Ljava/lang/String;)Ljava/lang/String;".equals(descriptor))) return;
                 //TODO: Don't blindly trust we get given the right method handle (Should be right though, lol)
+                boolean isConstantConcat = "makeConcatWithConstants".equals(name);
+                boolean isRegularConcat = "makeConcat".equals(name);
+                boolean isStringDotStringConcat = "(Ljava/lang/String;)Ljava/lang/String;".equals(descriptor);
+                if(!(isConstantConcat || isRegularConcat || isStringDotStringConcat)) return;
 
-                //TODO: make matching more strict, don't just do .contains()
+
+
                 for(Object object : bootstrapMethodArguments) {
-                    if (object instanceof String string && addToOutputIfValid(lookOutFor, string, (lookOutFor, constant) -> unpickableObjectsRoughlyEqual(lookOutFor, constant, false))) return;
+                    if (object instanceof String string && addToOutputIfValid(lookOutFor, UnpickUtil.stripFormatting(string), UnpickUtil::unpickableObjectsEqual)) return;
                 }
             }
 

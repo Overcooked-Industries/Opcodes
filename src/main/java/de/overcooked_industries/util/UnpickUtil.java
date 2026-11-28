@@ -5,6 +5,18 @@ import org.objectweb.asm.Opcodes;
 public class UnpickUtil {
     private UnpickUtil(){}
 
+    //TODO: Perhaps inline or perhaps get these via reflection
+    /**
+     * Tag used to demarcate an ordinary argument.
+     */
+    public static final String TAG_ARG = "\u0001";
+
+    /**
+     * Tag used to demarcate a constant.
+     */
+    public static final String TAG_CONST = "\u0002";
+
+
     ///Creates an unpick group with many `@scope methods`s that unpicks to the given class
     public static String toUnpickScope(String className, String methodName, String methodDescriptor) {
         return "@scope method " + className.replace("/",".") + " " + methodName + " " + methodDescriptor + "\n";
@@ -69,5 +81,9 @@ public class UnpickUtil {
 
             default -> null;
         };
+    }
+
+    public static String stripFormatting(String arg) {
+        return arg.replace(UnpickUtil.TAG_ARG,"").replace(UnpickUtil.TAG_CONST,"");
     }
 }
