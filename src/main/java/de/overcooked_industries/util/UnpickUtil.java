@@ -23,7 +23,7 @@ public class UnpickUtil {
     }
 
     public static boolean unpickableObjectsExactlyEqual(Object lookOutFor, Object cst) {
-        return unpickableObjectsRoughlyEqual(lookOutFor, cst, EqualityBitflags.NONE);
+        return unpickableObjectsRoughlyEqual(lookOutFor, cst, EqualityBitflags.NONE.flag);
     }
 
     // byte, double, float, int, long, and short
@@ -98,25 +98,28 @@ public class UnpickUtil {
     }
 
     ///Contains flags to or together as inputs to [#unpickableObjectsExactlyEqual(java.lang.Object, java.lang.Object)], or-ed together
-    public static class EqualityBitflags {
-        private EqualityBitflags() {}
+    public enum EqualityBitflags {
+        NONE(0),
+        USE_CONTAINS_FOR_STRING_MATCHING(1),
+        MATCH_WHOLE_NUMBERS_DIVISIBLE_BY_NUMBER_SEARCHED_FOR(2),
+        MATCH_WHOLE_NUMBERS_THAT_ARE_MULTIPLES_OF_NUMBER_SEARCHED_FOR(4);
 
-        @SuppressWarnings("unused")
-        public static final int NONE = 0;
-        public static final int USE_CONTAINS_FOR_STRING_MATCHING = 1;
-        public static final int MATCH_WHOLE_NUMBERS_DIVISIBLE_BY_NUMBER_SEARCHED_FOR = 2;
-        public static final int MATCH_WHOLE_NUMBERS_THAT_ARE_MULTIPLES_OF_NUMBER_SEARCHED_FOR = 4;
+        public final int flag;
+        EqualityBitflags(int flag) {
+            this.flag = flag;
+        }
+
 
         public static boolean usesContainsForStringMatching(int flags) {
-            return (flags & USE_CONTAINS_FOR_STRING_MATCHING) > 0;
+            return (flags & USE_CONTAINS_FOR_STRING_MATCHING.flag) > 0;
         }
 
         public static boolean matchWholeNumbersDivisibleByNumberSearchedFor(int flags) {
-            return (flags & MATCH_WHOLE_NUMBERS_DIVISIBLE_BY_NUMBER_SEARCHED_FOR) > 0;
+            return (flags & MATCH_WHOLE_NUMBERS_DIVISIBLE_BY_NUMBER_SEARCHED_FOR.flag) > 0;
         }
 
         public static boolean matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(int flags) {
-            return (flags & MATCH_WHOLE_NUMBERS_THAT_ARE_MULTIPLES_OF_NUMBER_SEARCHED_FOR) > 0;
+            return (flags & MATCH_WHOLE_NUMBERS_THAT_ARE_MULTIPLES_OF_NUMBER_SEARCHED_FOR.flag) > 0;
         }
     }
 

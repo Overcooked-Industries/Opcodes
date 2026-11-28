@@ -12,7 +12,7 @@ import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyE
 public class ConstantFindingClassVisitor extends ClassVisitor {
     Object lookOutFor = 20;
     // See EqualityBitflags
-    int matchingFlags = UnpickUtil.EqualityBitflags.NONE;
+    int matchingFlags = UnpickUtil.EqualityBitflags.NONE.flag;
     String className;
 
     /**
