@@ -22,20 +22,24 @@ public class UnpickUtil {
         return "method " + className.replace("/",".") + " " + methodName + " " + methodDescriptor + "\n";
     }
 
-    public static boolean unpickableObjectsEqual(Object lookOutFor, Object cst) {
-        return unpickableObjectsRoughlyEqual(lookOutFor, cst, true);
+    public static boolean unpickableObjectsExactlyEqual(Object lookOutFor, Object cst) {
+        return unpickableObjectsRoughlyEqual(lookOutFor, cst, EqualityBitflags.NONE);
     }
 
     // byte, double, float, int, long, and short
     //TODO: Potentially switch-case
     //TODO: short, byte
-    //TODO: BITFLAGS for exact
-    public static boolean unpickableObjectsRoughlyEqual(Object lookOutFor, Object cst, boolean exact) {
+    //TODO: this is may be too narrow, it checks exact type equality of both types even if one is wider
+    public static boolean unpickableObjectsRoughlyEqual(Object lookOutFor, Object cst, int flags) {
         if(!(lookOutFor instanceof String || lookOutFor instanceof Number)) return false;
         if(cst == null) return false;
 
-        if (cst instanceof Integer i && lookOutFor instanceof Integer i2) {
-            return exact ? (int) i == i2 : (i % i2 == 0 || i2 % i == 0);
+        if (cst instanceof Integer i && lookOutFor instanceof Integer loF) {
+            boolean isWholeNumberDivisibleByNumberSearchedFor = EqualityBitflags.matchWholeNumbersDivisibleByNumberSearchedFor(flags) && (i % loF) == 0;
+            boolean isMultipleOfNumberSearchedFor = EqualityBitflags.matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(flags) && (loF % i) == 0;
+            boolean isExactMatch = i.equals(loF);
+
+            return isExactMatch || isWholeNumberDivisibleByNumberSearchedFor || isMultipleOfNumberSearchedFor;
         }
 
         if (lookOutFor instanceof Float f && cst instanceof Number n && (cst instanceof Float || cst instanceof Double)) {
@@ -46,12 +50,17 @@ public class UnpickUtil {
             return Double.doubleToRawLongBits(d) == Double.doubleToRawLongBits(d2);
         }
 
-        if (cst instanceof Long l && lookOutFor instanceof Long lOf) {
-            return exact ? l.equals(lOf) : (l % lOf == 0 || lOf % l == 0);
+        if (cst instanceof Long l && lookOutFor instanceof Long LoF) {
+            // ? l.equals(lOf) : ( || lOf % l == 0)
+            boolean isWholeNumberDivisibleByNumberSearchedFor = EqualityBitflags.matchWholeNumbersDivisibleByNumberSearchedFor(flags) && (l % LoF) == 0;
+            boolean isMultipleOfNumberSearchedFor = EqualityBitflags.matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(flags) && (LoF % l) == 0;
+            boolean isExactMatch = l.equals(LoF);
+
+            return isExactMatch || isWholeNumberDivisibleByNumberSearchedFor || isMultipleOfNumberSearchedFor;
         }
 
         if (cst instanceof String s && lookOutFor instanceof String lOf) {
-            return exact ? s.equals(lookOutFor) : s.contains(lOf);
+            return EqualityBitflags.usesContainsForStringMatching(flags) ? s.contains(lOf) : s.equals(lookOutFor);
         }
 
         return false;
@@ -87,4 +96,29 @@ public class UnpickUtil {
     public static String stripFormatting(String arg) {
         return arg.replace(UnpickUtil.TAG_ARG,"").replace(UnpickUtil.TAG_CONST,"");
     }
+
+    ///Contains flags to or together as inputs to [#unpickableObjectsExactlyEqual(java.lang.Object, java.lang.Object)], or-ed together
+    public static class EqualityBitflags {
+        private EqualityBitflags() {}
+
+        @SuppressWarnings("unused")
+        public static final int NONE = 0;
+        public static final int USE_CONTAINS_FOR_STRING_MATCHING = 1;
+        public static final int MATCH_WHOLE_NUMBERS_DIVISIBLE_BY_NUMBER_SEARCHED_FOR = 2;
+        public static final int MATCH_WHOLE_NUMBERS_THAT_ARE_MULTIPLES_OF_NUMBER_SEARCHED_FOR = 4;
+
+        public static boolean usesContainsForStringMatching(int flags) {
+            return (flags & USE_CONTAINS_FOR_STRING_MATCHING) > 0;
+        }
+
+        public static boolean matchWholeNumbersDivisibleByNumberSearchedFor(int flags) {
+            return (flags & MATCH_WHOLE_NUMBERS_DIVISIBLE_BY_NUMBER_SEARCHED_FOR) > 0;
+        }
+
+        public static boolean matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(int flags) {
+            return (flags & MATCH_WHOLE_NUMBERS_THAT_ARE_MULTIPLES_OF_NUMBER_SEARCHED_FOR) > 0;
+        }
+    }
+
+
 }

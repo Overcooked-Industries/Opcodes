@@ -11,8 +11,8 @@ import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyE
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
     Object lookOutFor = 20;
-    //Field specifying whether to deny partial matches of Strings or allow ints/longs divisible by lookOutFor and ints/longs by which lookOutFor is divisible; true => Don't allow, false => allow
-    boolean exactMatch = true;
+    // See EqualityBitflags
+    int matchingFlags = UnpickUtil.EqualityBitflags.NONE;
     String className;
 
     /**
@@ -40,7 +40,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
         return new MethodVisitor(api) {
             @Override
             public void visitLdcInsn(Object value) {
-                addToOutputIfValid(lookOutFor, value, (lookOutFor, constant) -> unpickableObjectsRoughlyEqual(lookOutFor, constant, exactMatch), "@scope ", "");
+                addToOutputIfValid(lookOutFor, value, (lookOutFor, constant) -> unpickableObjectsRoughlyEqual(lookOutFor, constant, matchingFlags), "@scope ", "");
             }
 
             //Useful for chars/ints/bytes/shorts, as SIPUSH or BIPUSH may be used instead of LDC for these types
@@ -54,7 +54,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
                 //This is always widening or identity, so it's fine
                 if(operand != (int) lookOutFor) return;
 
-                addToOutputIfValid(lookOutFor, operand, UnpickUtil::unpickableObjectsEqual, "@scope ", "");
+                addToOutputIfValid(lookOutFor, operand, UnpickUtil::unpickableObjectsExactlyEqual, "@scope ", "");
             }
 
 
@@ -68,7 +68,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitInsn(final int opcode) {
                 Number constant = UnpickUtil.toNumber(opcode);
-                if (UnpickUtil.toNumber(opcode) != null) addToOutputIfValid(lookOutFor, constant, (lookOutFor, c) -> unpickableObjectsRoughlyEqual(lookOutFor, c, exactMatch), "@scope ", "");
+                if (UnpickUtil.toNumber(opcode) != null) addToOutputIfValid(lookOutFor, constant, (lookOutFor, c) -> unpickableObjectsRoughlyEqual(lookOutFor, c, matchingFlags), "@scope ", "");
             }
 
 
@@ -85,7 +85,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
 
 
                 for(Object object : bootstrapMethodArguments) {
-                    if (object instanceof String string && addToOutputIfValid(lookOutFor, UnpickUtil.stripFormatting(string), (lOF, constant) -> UnpickUtil.unpickableObjectsRoughlyEqual(lOF, constant, exactMatch), "+", "")) return;
+                    if (object instanceof String string && addToOutputIfValid(lookOutFor, UnpickUtil.stripFormatting(string), (lOF, constant) -> UnpickUtil.unpickableObjectsRoughlyEqual(lOF, constant, matchingFlags), "+", "")) return;
                 }
             }
 
