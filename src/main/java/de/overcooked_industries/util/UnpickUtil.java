@@ -35,8 +35,8 @@ public class UnpickUtil {
         if(cst == null) return false;
 
         if (cst instanceof Integer i && lookOutFor instanceof Integer loF) {
-            boolean isWholeNumberDivisibleByNumberSearchedFor = EqualityBitflags.matchWholeNumbersDivisibleByNumberSearchedFor(flags) && (i % loF) == 0;
-            boolean isMultipleOfNumberSearchedFor = EqualityBitflags.matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(flags) && (loF % i) == 0;
+            boolean isWholeNumberDivisibleByNumberSearchedFor =  EqualityBitflags.matchWholeNumbersDivisibleByNumberSearchedFor(flags) && loF != 0  && (i % loF) == 0;
+            boolean isMultipleOfNumberSearchedFor = EqualityBitflags.matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(flags) && i != 0 && (loF % i) == 0;
             boolean isExactMatch = i.equals(loF);
 
             return isExactMatch || isWholeNumberDivisibleByNumberSearchedFor || isMultipleOfNumberSearchedFor;
@@ -50,11 +50,11 @@ public class UnpickUtil {
             return Double.doubleToRawLongBits(d) == Double.doubleToRawLongBits(d2);
         }
 
-        if (cst instanceof Long l && lookOutFor instanceof Long LoF) {
+        if (cst instanceof Long l && lookOutFor instanceof Long loF) {
             // ? l.equals(lOf) : ( || lOf % l == 0)
-            boolean isWholeNumberDivisibleByNumberSearchedFor = EqualityBitflags.matchWholeNumbersDivisibleByNumberSearchedFor(flags) && (l % LoF) == 0;
-            boolean isMultipleOfNumberSearchedFor = EqualityBitflags.matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(flags) && (LoF % l) == 0;
-            boolean isExactMatch = l.equals(LoF);
+            boolean isWholeNumberDivisibleByNumberSearchedFor = EqualityBitflags.matchWholeNumbersDivisibleByNumberSearchedFor(flags) && loF != 0 && (l % loF) == 0;
+            boolean isMultipleOfNumberSearchedFor = EqualityBitflags.matchWholeNumbersThatAreMultiplesOfNumberSearchedFor(flags) && l != 0 && (loF % l) == 0;
+            boolean isExactMatch = l.equals(loF);
 
             return isExactMatch || isWholeNumberDivisibleByNumberSearchedFor || isMultipleOfNumberSearchedFor;
         }
