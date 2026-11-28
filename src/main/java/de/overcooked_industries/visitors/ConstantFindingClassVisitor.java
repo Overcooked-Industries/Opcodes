@@ -12,7 +12,7 @@ import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyE
 public class ConstantFindingClassVisitor extends ClassVisitor {
     Object lookOutFor = ":";
     //Field specifying whether to deny partial matches of Strings; true => Don't allow, false => allow
-    boolean exactMatch = true;
+    boolean exactMatch = false;
     String className;
 
     /**
@@ -85,7 +85,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
 
 
                 for(Object object : bootstrapMethodArguments) {
-                    if (object instanceof String string && addToOutputIfValid(lookOutFor, UnpickUtil.stripFormatting(string), UnpickUtil::unpickableObjectsEqual)) return;
+                    if (object instanceof String string && addToOutputIfValid(lookOutFor, UnpickUtil.stripFormatting(string), (lOF, constant) -> UnpickUtil.unpickableObjectsRoughlyEqual(lOF, constant, exactMatch))) return;
                 }
             }
 
