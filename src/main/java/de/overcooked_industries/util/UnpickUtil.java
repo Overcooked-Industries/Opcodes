@@ -19,7 +19,7 @@ public class UnpickUtil {
 
     ///Creates an unpick group with many `@scope methods`s that unpicks to the given class
     public static String toUnpickScope(String className, String methodName, String methodDescriptor) {
-        return "@scope method " + className.replace("/",".") + " " + methodName + " " + methodDescriptor + "\n";
+        return "method " + className.replace("/",".") + " " + methodName + " " + methodDescriptor + "\n";
     }
 
     public static boolean unpickableObjectsEqual(Object lookOutFor, Object cst) {
@@ -29,12 +29,13 @@ public class UnpickUtil {
     // byte, double, float, int, long, and short
     //TODO: Potentially switch-case
     //TODO: short, byte
+    //TODO: BITFLAGS for exact
     public static boolean unpickableObjectsRoughlyEqual(Object lookOutFor, Object cst, boolean exact) {
         if(!(lookOutFor instanceof String || lookOutFor instanceof Number)) return false;
         if(cst == null) return false;
 
         if (cst instanceof Integer i && lookOutFor instanceof Integer i2) {
-            return (int) i == i2;
+            return exact ? (int) i == i2 : (i % i2 == 0 || i2 % i == 0);
         }
 
         if (lookOutFor instanceof Float f && cst instanceof Number n && (cst instanceof Float || cst instanceof Double)) {
@@ -45,8 +46,8 @@ public class UnpickUtil {
             return Double.doubleToRawLongBits(d) == Double.doubleToRawLongBits(d2);
         }
 
-        if (cst instanceof Long l) {
-            return l.equals(lookOutFor);
+        if (cst instanceof Long l && lookOutFor instanceof Long lOf) {
+            return exact ? l.equals(lOf) : (l % lOf == 0 || lOf % l == 0);
         }
 
         if (cst instanceof String s && lookOutFor instanceof String lOf) {

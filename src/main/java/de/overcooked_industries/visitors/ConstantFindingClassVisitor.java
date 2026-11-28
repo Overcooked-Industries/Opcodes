@@ -10,9 +10,9 @@ import static de.overcooked_industries.jar.JarProcessor.seen;
 import static de.overcooked_industries.util.UnpickUtil.unpickableObjectsRoughlyEqual;
 
 public class ConstantFindingClassVisitor extends ClassVisitor {
-    Object lookOutFor = ":";
-    //Field specifying whether to deny partial matches of Strings; true => Don't allow, false => allow
-    boolean exactMatch = false;
+    Object lookOutFor = 20;
+    //Field specifying whether to deny partial matches of Strings or allow ints/longs divisible by lookOutFor and ints/longs by which lookOutFor is divisible; true => Don't allow, false => allow
+    boolean exactMatch = true;
     String className;
 
     /**
@@ -40,7 +40,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
         return new MethodVisitor(api) {
             @Override
             public void visitLdcInsn(Object value) {
-                addToOutputIfValid(lookOutFor, value, (lookOutFor, constant) -> unpickableObjectsRoughlyEqual(lookOutFor, constant, exactMatch));
+                addToOutputIfValid(lookOutFor, value, (lookOutFor, constant) -> unpickableObjectsRoughlyEqual(lookOutFor, constant, exactMatch), "@scope ", "");
             }
 
             //Useful for chars/ints/bytes/shorts, as SIPUSH or BIPUSH may be used instead of LDC for these types
@@ -54,7 +54,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
                 //This is always widening or identity, so it's fine
                 if(operand != (int) lookOutFor) return;
 
-                addToOutputIfValid(lookOutFor, operand, UnpickUtil::unpickableObjectsEqual);
+                addToOutputIfValid(lookOutFor, operand, UnpickUtil::unpickableObjectsEqual, "@scope ", "");
             }
 
 
@@ -68,7 +68,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             @Override
             public void visitInsn(final int opcode) {
                 Number constant = UnpickUtil.toNumber(opcode);
-                if (UnpickUtil.toNumber(opcode) != null) addToOutputIfValid(lookOutFor, constant, UnpickUtil::unpickableObjectsEqual);
+                if (UnpickUtil.toNumber(opcode) != null) addToOutputIfValid(lookOutFor, constant, (lookOutFor, c) -> unpickableObjectsRoughlyEqual(lookOutFor, c, exactMatch), "@scope ", "");
             }
 
 
@@ -85,7 +85,7 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
 
 
                 for(Object object : bootstrapMethodArguments) {
-                    if (object instanceof String string && addToOutputIfValid(lookOutFor, UnpickUtil.stripFormatting(string), (lOF, constant) -> UnpickUtil.unpickableObjectsRoughlyEqual(lOF, constant, exactMatch))) return;
+                    if (object instanceof String string && addToOutputIfValid(lookOutFor, UnpickUtil.stripFormatting(string), (lOF, constant) -> UnpickUtil.unpickableObjectsRoughlyEqual(lOF, constant, exactMatch), "+", "")) return;
                 }
             }
 
@@ -94,10 +94,10 @@ public class ConstantFindingClassVisitor extends ClassVisitor {
             //Helper methods
 
 
-            boolean addToOutputIfValid(Object lookOutFor, Object constant, BiFunction<Object, Object, Boolean> equalityCheck) {
+            boolean addToOutputIfValid(Object lookOutFor, Object constant, BiFunction<Object, Object, Boolean> equalityCheck, String prefix, String suffix) {
                 boolean equal = equalityCheck.apply(lookOutFor, constant);
                 if (!seen.contains(className + methodName) && equal) {
-                    outputText.append(UnpickUtil.toUnpickScope(className, methodName, descriptor));
+                    outputText.append(prefix).append(UnpickUtil.toUnpickScope(className, methodName, descriptor)).append(suffix);
                     seen.add(className + methodName);
                 }
 
